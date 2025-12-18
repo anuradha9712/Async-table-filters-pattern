@@ -1,0 +1,309 @@
+.Table-verticalFilter {
+  width: calc(100% - var(--spacing-9));
+}
+
+.Table-filters {
+  box-sizing: border-box;
+  display: flex;
+  flex-shrink: 0;
+}
+
+.Table-filters--vertical {
+  flex-direction: column;
+  width: var(--spacing-9);
+}
+
+.Table-filters--scroll {
+  overflow: auto;
+  position: relative;
+}
+
+.Table-filters--scroll::-webkit-scrollbar,
+.Header-filters-row::-webkit-scrollbar {
+  display: none;
+}
+
+.Header-wrapper {
+  max-width: 400px;
+}
+
+.FilterLabel-pinnedIcon {
+  display: none;
+}
+
+.FilterLabel:hover .FilterLabel-pinnedIcon {
+  display: inline;
+}
+
+.Header-filters-row {
+  max-width: calc(100vw - 600px);
+  overflow-x: scroll;
+  display: flex;
+}
+
+.Filter-toast {
+  left: var(--spacing-2);
+  bottom: var(--spacing-2);
+  z-index: 1;
+}
+
+.Chip-view-separator {
+  height: var(--spacing-3);
+}
+
+.Chip-separator {
+  content: "";
+  flex-shrink: 0;
+  filter: blur(3px);
+  display: inline-flex;
+  width: var(--spacing-xs);
+  height: var(--spacing-3);
+  background: var(--neutrals-night-lightest, var(--inverse-lightest));
+}
+
+.Filter-list .Grid-rowWrapper:last-child {
+  border-bottom: 0;
+}
+
+/* Animations */
+
+@keyframes table-card-open {
+  from {
+    width: 100%;
+  }
+  to {
+    width: calc(100% - 260px);
+  }
+}
+
+@keyframes table-card-close {
+  from {
+    width: 80%;
+  }
+  to {
+    width: calc(100% + 260px);
+  }
+}
+
+@keyframes header-filter-hide {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    display: none;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--spacing-xl);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    height: var(--spacing-xl);
+  }
+  to {
+    height: 0;
+  }
+}
+
+@keyframes expand {
+  from {
+    height: var(--spacing-3);
+  }
+  to {
+    height: 56px;
+  }
+}
+
+@keyframes collapsed {
+  from {
+    height: 56px;
+  }
+  to {
+    height: var(--spacing-3);
+  }
+}
+
+.Table-filters--open {
+  animation: fadeIn var(--duration--moderate-02)
+    var(--standard-expressive-curve);
+}
+
+.Table-filters--close {
+  animation: fadeOut var(--duration--fast-01) var(--standard-expressive-curve);
+}
+
+.Table-panel--open {
+  animation: table-card-open var(--duration--moderate-01)
+    var(--standard-productive-curve) forwards;
+}
+
+.Table-panel--close {
+  animation: table-card-close var(--duration--moderate-01)
+    var(--standard-productive-curve) forwards;
+}
+
+.Header-filters--hide {
+  animation: header-filter-hide var(--duration--fast-01)
+    var(--standard-productive-curve) forwards;
+}
+
+.Header-filters--show {
+  animation: fadeIn var(--duration--fast-01) var(--standard-productive-curve)
+    forwards;
+  opacity: 0;
+  animation-delay: var(--duration--fast-01);
+}
+
+.Selected-chip--show {
+  animation: fadeIn var(--duration--moderate-02)
+    var(--entrance-productive-curve) forwards;
+  animation-delay: var(--duration--fast-01);
+}
+
+@keyframes action-slide-right {
+  from {
+    opacity: 0;
+    right: var(--spacing);
+  }
+  to {
+    opacity: 1;
+    right: 0;
+  }
+}
+
+@keyframes action-slide-left {
+  from {
+    opacity: 0;
+    right: 0;
+  }
+  to {
+    opacity: 1;
+    right: var(--spacing);
+  }
+}
+
+.Group-action-slide-right {
+  animation: action-slide-right var(--duration--fast-01)
+    var(--standard-productive-curve) forwards;
+  opacity: 0;
+}
+
+.Group-action-slide-left {
+  animation: action-slide-left var(--duration--fast-01)
+    var(--standard-productive-curve) forwards;
+  opacity: 0;
+}
+
+.Selected-chip--hide {
+  animation: fadeOut var(--duration--moderate-02) var(--exit-productive-curve)
+    forwards;
+}
+
+.Header-wrapper-slideDown {
+  animation: slideDown var(--duration--moderate-01)
+    var(--standard-productive-curve) forwards;
+}
+
+.Header-wrapper-slideUp {
+  animation: slideUp var(--duration--moderate-01)
+    var(--standard-productive-curve) forwards;
+}
+
+.Filter-row--expanded {
+  animation: expand var(--duration--moderate-01)
+    var(--standard-productive-curve);
+}
+
+.Filter-row--collapsed {
+  animation: collapsed var(--duration--moderate-01)
+    var(--standard-productive-curve);
+}
+
+@keyframes slideLeft {
+  from {
+    left: 100%;
+  }
+  to {
+    left: 0;
+  }
+}
+
+@keyframes slideRight {
+  from {
+    right: 100%;
+  }
+  to {
+    right: 0;
+  }
+}
+
+.Filter-btn-slide--left {
+  animation: slideLeft var(--duration--moderate-01)
+    var(--standard-productive-curve) forwards;
+}
+
+.Filter-btn-slide--right {
+  animation: slideRight var(--duration--fast-02)
+    var(--standard-productive-curve) forwards;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.Pin-filter-slide--up {
+  animation: slideUp var(--duration--moderate-01)
+    var(--standard-productive-curve) forwards;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.Pin-filter-slide--down {
+  animation: slideDown var(--duration--moderate-01)
+    var(--standard-productive-curve) forwards;
+}
+
+.Table {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+}
+
+.Table-grid {
+  height: 100%;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.Table-pagination {
+  display: flex;
+  justify-content: center;
+  background: var(--white);
+  padding: var(--spacing) 0;
+  border-top: var(--border);
+}
