@@ -24,7 +24,21 @@
 }
 
 .Header-wrapper {
-  max-width: 400px;
+  /* Let the search/actions cluster keep its controls on one row on wide
+     screens and wrap them onto multiple rows only when space runs out (down to
+     a 320px-equivalent), so nothing overflows or is cut off (WCAG 1.4.10
+     Reflow). Previously a fixed w-50 forced the row to half the card width,
+     overflowing the 256px search input at narrow widths. flex-wrap is applied
+     on the element; row-gap spaces the wrapped rows. */
+  row-gap: 8px;
+}
+
+/* Cap the search at its normal width on wide screens (the DS Input is
+   flex: 1 1 auto, so max-width keeps it from stretching), while letting it
+   shrink to fit narrow viewports (down to the 320px-equivalent) instead of
+   overflowing — its default 256px min-width is relaxed via minWidth={0}. */
+.Header-search {
+  max-width: 256px;
 }
 
 .FilterLabel-pinnedIcon {
@@ -36,8 +50,14 @@
 }
 
 .Header-filters-row {
-  max-width: calc(100vw - 600px);
-  overflow-x: scroll;
+  /* Size relative to the available container width (not the viewport) so the
+     chips row scales correctly under browser zoom. A fixed calc(100vw - 600px)
+     collapsed the row at 200% zoom, clipping chips and obscuring the adjacent
+     controls (WCAG 1.4.4 Resize Text / 1.4.10 Reflow). min-width:0 lets the
+     flex item shrink below its content so overflow scrolls instead of clipping. */
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-x: auto;
   display: flex;
 }
 
