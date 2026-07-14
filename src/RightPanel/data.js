@@ -67,6 +67,10 @@ export const dynamicFilterList = (loading) => {
           placeholder: "mm/dd/yyyy",
           disabled: loading,
           minWidth: "unset",
+          // DatePicker's Trigger only forwards inputOptions to the input, so the
+          // accessible name for the date field must be set here (WCAG 2.4.6 /
+          // 4.1.2 — the programmatic label must convey the control's purpose).
+          "aria-label": "Creation date",
         },
       },
     },
