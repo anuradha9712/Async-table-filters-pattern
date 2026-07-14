@@ -17,9 +17,10 @@ export const HeaderSearch = ({ updateSearchTerm }) => {
   return (
     <Input
       name="TableHeader-search"
-      className="mr-6"
+      className="mr-6 Header-search"
       icon="search"
       placeholder="Search"
+      minWidth={0}
       onChange={({ target }) => onSearchHandler(target)}
     />
   );

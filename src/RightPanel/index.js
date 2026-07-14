@@ -2,6 +2,7 @@ import React from "react";
 import {
   Icon,
   Label,
+  Text,
   Button,
   Dropdown,
   Subheading,
@@ -11,6 +12,51 @@ import {
 import { staticFilterList, dynamicFilterList } from "./data";
 import classNames from "classnames";
 import "../style.css";
+
+// Error/empty templates for the "Add new filter" search dropdown. Mirrors the
+// design-system default markup, but wraps the message in an ARIA live region
+// (role="status") so screen readers announce it automatically (WCAG 4.1.3
+// Status Messages) — the DS default renders it as plain, silent text.
+const filterSearchErrorTitle = {
+  FAILED_TO_FETCH: "Failed to fetch data",
+  NO_RECORDS_FOUND: "No results found",
+  DEFAULT: "No record available",
+};
+
+const filterSearchErrorDescription = {
+  FAILED_TO_FETCH: "We couldn't load the data, try reloading.",
+  NO_RECORDS_FOUND: "Try modifying your search to find what you are looking for.",
+  DEFAULT: "We have nothing to show you at the moment.",
+};
+
+const FilterSearchErrorTemplate = ({ dropdownStyle, errorType, updateOptions }) => (
+  <div className="px-7 d-flex" style={dropdownStyle} data-test="DesignSystem-Dropdown--wrapper">
+    <div
+      role="status"
+      aria-live="polite"
+      className="d-flex flex-column justify-content-center align-items-center w-100 py-8"
+      data-test="DesignSystem-Dropdown--errorWrapper"
+    >
+      <Text className="text-align-center mb-3" weight="strong">
+        {filterSearchErrorTitle[errorType]}
+      </Text>
+      <Text className="text-align-center mb-6" weight="medium" size="small" appearance="subtle">
+        {filterSearchErrorDescription[errorType]}
+      </Text>
+      {errorType === "FAILED_TO_FETCH" && (
+        <Button
+          size="tiny"
+          aria-label="reload"
+          icon="refresh"
+          iconAlign="left"
+          onClick={() => updateOptions()}
+        >
+          Reload
+        </Button>
+      )}
+    </div>
+  </div>
+);
 
 export const RightPanel = ({
   showVerticalFilters,
@@ -27,6 +73,8 @@ export const RightPanel = ({
   const [creationDate, setCreationDate] = React.useState("");
   const [loader, setLoader] = React.useState(false);
   const ref = React.useRef();
+  const headingRef = React.useRef(null);
+  const previousFocusRef = React.useRef(null);
 
   const getDisplayFilterList = React.useCallback(() => {
     let list = [];
@@ -74,6 +122,19 @@ export const RightPanel = ({
   React.useEffect(() => {
     setSelectedOption(filterList);
   }, [filterList]);
+
+  // Move keyboard focus into the newly opened Filters section so the focus
+  // order stays logical (WCAG 2.4.3). When the panel closes, restore focus to
+  // the element that opened it (the "More Filters" trigger).
+  React.useEffect(() => {
+    if (showVerticalFilters) {
+      previousFocusRef.current = document.activeElement;
+      if (headingRef.current) headingRef.current.focus();
+    } else if (previousFocusRef.current) {
+      previousFocusRef.current.focus();
+      previousFocusRef.current = null;
+    }
+  }, [showVerticalFilters]);
 
   React.useEffect(() => {
     if (ref.current) {
@@ -136,6 +197,8 @@ export const RightPanel = ({
   return (
     <div
       ref={ref}
+      role="region"
+      aria-label="Filters"
       className={`Table-filters Table-filters--vertical bg-secondary-lightest ${
         !showVerticalFilters
           ? " d-none Table-filters--close"
@@ -144,7 +207,9 @@ export const RightPanel = ({
     >
       <div className={`px-5 ${separator ? "Table-filters--scroll" : ""}`}>
         <div className="d-flex align-items-center justify-content-between pt-5 mb-6">
-          <Subheading>Filters</Subheading>
+          <Subheading ref={headingRef} tabIndex={-1}>
+            Filters
+          </Subheading>
           <Button
             icon="close"
             className="cursor-pointer"
@@ -157,7 +222,7 @@ export const RightPanel = ({
           return (
             <div className={pinFilterClass} key={listItem}>
               <div className="d-flex align-items-center mb-3">
-                <Label>{inlineLabel}</Label>
+                <Label id={`filter-label-${optionKey}`}>{inlineLabel}</Label>
                 <Tooltip tooltip="Unpin" position="bottom-start">
                   <Icon
                     size={12}
@@ -173,6 +238,8 @@ export const RightPanel = ({
                 withCheckbox={true}
                 showApplyButton={true}
                 applyButtonLabel="Select"
+                id={`filter-trigger-${optionKey}`}
+                aria-labelledby={`filter-label-${optionKey}`}
                 key={selectedOption[optionKey]}
                 onChange={(selected) =>
                   onFilterChangeHandler(optionKey, selected)
@@ -193,7 +260,7 @@ export const RightPanel = ({
           return (
             <div className="py-4" key={key}>
               <div className="d-flex align-items-center mb-3 FilterLabel">
-                <Label>{inlineLabel}</Label>
+                <Label id={`filter-label-${optionKey}`}>{inlineLabel}</Label>
                 <Tooltip tooltip="Pin" position="bottom-start">
                   <Icon
                     size={12}
@@ -210,6 +277,8 @@ export const RightPanel = ({
                 loading={loader}
                 showApplyButton={true}
                 applyButtonLabel="Select"
+                id={`filter-trigger-${optionKey}`}
+                aria-labelledby={`filter-label-${optionKey}`}
                 key={selectedOption[optionKey]}
                 onChange={(selected) =>
                   onFilterChangeHandler(optionKey, selected)
@@ -238,6 +307,7 @@ export const RightPanel = ({
                       icon="delete"
                       appearance="transparent"
                       size="tiny"
+                      aria-label={`Remove ${label} filter`}
                       onClick={() => removeDynamicFilter(label, value)}
                     />
                   </div>
@@ -274,6 +344,7 @@ export const RightPanel = ({
           withCheckbox={true}
           showApplyButton={true}
           applyButtonLabel="Add"
+          errorTemplate={FilterSearchErrorTemplate}
           onChange={onNewFilterAddition}
           customTrigger={() => (
             <Button
