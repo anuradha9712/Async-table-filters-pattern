@@ -19,7 +19,7 @@ export const Header = (props) => {
 
   return (
     <div>
-      <div className="d-flex flex-wrap align-items-center Header-wrapper">
+      <div className="d-flex flex-wrap Header-wrapper">
         <HeaderSearch updateSearchTerm={props.updateSearchTerm} />
         <HeaderButton {...props} />
         {savedFilterList.length === 0 ? (
